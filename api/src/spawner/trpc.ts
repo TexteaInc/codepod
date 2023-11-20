@@ -55,11 +55,11 @@ const routingTable: Map<string, string> = new Map();
 export function createSpawnerRouter(yjsServerUrl) {
   return router({
     spawnRuntime: publicProcedure
-      .input(z.object({ runtimeId: z.string(), repoId: z.string() }))
-      .mutation(async ({ input: { runtimeId, repoId } }) => {
+      .input(z.object({ runtimeId: z.string(), repoId: z.string(), pythonPath: z.string() }))
+      .mutation(async ({ input: { runtimeId, repoId, pythonPath } }) => {
         console.log("spawnRuntime", runtimeId, repoId);
         // create the runtime container
-        const wsUrl = await spawnRuntime(runtimeId);
+        const wsUrl = await spawnRuntime(runtimeId, pythonPath);
         console.log("Runtime spawned at", wsUrl);
         routingTable.set(runtimeId, wsUrl);
         // set initial runtimeMap info for this runtime

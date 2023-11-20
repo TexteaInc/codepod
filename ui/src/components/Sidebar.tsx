@@ -688,6 +688,7 @@ const RuntimeStatus = () => {
   const runtimeChanged = useStore(store, (state) => state.runtimeChanged);
   const ids = Array.from<string>(runtimeMap.keys());
   const spawnRuntime = trpc.spawner.spawnRuntime.useMutation();
+  const [pythonPath, setpythonPath] = useState("python3");
 
   return (
     <>
@@ -695,7 +696,7 @@ const RuntimeStatus = () => {
       <Button
         onClick={() => {
           const id = myNanoId();
-          spawnRuntime.mutate({ runtimeId: id, repoId: repoId });
+          spawnRuntime.mutate({ runtimeId: id, repoId: repoId, pythonPath: pythonPath });
         }}
       >
         Create New Runtime

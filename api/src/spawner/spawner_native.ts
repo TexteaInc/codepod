@@ -72,7 +72,7 @@ async function createNewConnSpec() {
  *
  * @returns target url: ws://container:port
  */
-export async function spawnRuntime(runtimeId) {
+export async function spawnRuntime(runtimeId, pythonPath: string) {
   // 1. launch the kernel with some connection file
   const spec = await createNewConnSpec();
   console.log("=== spec", spec);
@@ -80,7 +80,7 @@ export async function spawnRuntime(runtimeId) {
   writeFileSync("/tmp/conn.json", JSON.stringify(spec));
   // create a new process
   // "python3", "-m", "ipykernel_launcher", "-f", "/conn.json"
-  const proc = spawn("python3", [
+  const proc = spawn(pythonPath, [
     "-m",
     "ipykernel_launcher",
     "-f",
