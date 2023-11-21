@@ -46,6 +46,9 @@ import {
   Grid,
   Paper,
   Menu,
+  FormControl,
+  InputLabel,
+  Select,
 } from "@mui/material";
 import { getUpTime, myNanoId } from "../lib/utils/utils";
 import { toSvg } from "html-to-image";
@@ -683,20 +686,41 @@ const RuntimeItem = ({ runtimeId }) => {
 const RuntimeStatus = () => {
   const store = useContext(RepoContext)!;
   const repoId = useStore(store, (state) => state.repoId);
+  const currentPythonPath = useStore(store, (state) => state.currentPythonPath);
+  const setCurrentPythonPath = useStore(store, (state) => state.setCurrentPythonPath);
+  const pythonPaths = useStore(store, (state) => state.pythonPaths);
   const runtimeMap = useStore(store, (state) => state.getRuntimeMap());
   // Observe runtime change
   const runtimeChanged = useStore(store, (state) => state.runtimeChanged);
   const ids = Array.from<string>(runtimeMap.keys());
   const spawnRuntime = trpc.spawner.spawnRuntime.useMutation();
-  const [pythonPath, setpythonPath] = useState("python3");
 
   return (
     <>
       <Typography variant="h6">Runtime</Typography>
+      <FormControl fullWidth>
+        <InputLabel id="kernel-label">Kernels</InputLabel>
+        <Select
+          value={currentPythonPath}
+          onChange={(event) => {
+            setCurrentPythonPath(event.target.value as string);
+          }}
+          label="Kernels"
+          labelId="kernel-label"
+          id="kernel-select"
+        >
+          <MenuItem value="python3">Python 3 (default)</MenuItem>
+          {
+            pythonPaths.map((path) => (
+              <MenuItem value={path}>{path}</MenuItem>
+            ))
+          }
+        </Select>
+      </FormControl>
       <Button
         onClick={() => {
           const id = myNanoId();
-          spawnRuntime.mutate({ runtimeId: id, repoId: repoId, pythonPath: pythonPath });
+          spawnRuntime.mutate({ runtimeId: id, repoId: repoId, pythonPath: currentPythonPath });
         }}
       >
         Create New Runtime

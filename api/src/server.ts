@@ -9,6 +9,7 @@ import { bindState, writeState } from "./yjs/yjs-blob";
 
 import cors from "cors";
 import { createSpawnerRouter, router } from "./spawner/trpc";
+import { scanPythonsWithKernel } from "./util";
 
 export async function startServer({ port, repoDir }) {
   console.log("starting server ..");
@@ -21,6 +22,8 @@ export async function startServer({ port, repoDir }) {
   console.log("html path: ", path);
   app.use(express.static(path));
 
+  const pythons = scanPythonsWithKernel();
+
   const yjsServerUrl = `ws://localhost:${port}/socket`;
 
   app.use(
@@ -31,6 +34,15 @@ export async function startServer({ port, repoDir }) {
       }),
     })
   );
+
+  app.use(
+    "/versions",
+    function(_, res) {
+      res.json({
+        "versions": pythons,
+      });
+    }
+  )
 
   const http_server = http.createServer(app);
 

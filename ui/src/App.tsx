@@ -26,14 +26,10 @@ import { httpBatchLink } from "@trpc/client";
 import React, { useState } from "react";
 
 import { trpc } from "./lib/trpc";
+import { getRemoteURL } from "./lib/utils/utils";
 
-let remoteUrl;
+const remoteUrl = getRemoteURL();
 
-if (import.meta.env.DEV) {
-  remoteUrl = `localhost:4000`;
-} else {
-  remoteUrl = `${window.location.hostname}:${window.location.port}`;
-}
 let trpcUrl = `http://${remoteUrl}/trpc`;
 // the url should be ws://<host>:<port>/socket
 let yjsWsUrl = `ws://${remoteUrl}/socket`;

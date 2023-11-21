@@ -1,5 +1,6 @@
 import { createStore, StateCreator, StoreApi } from "zustand";
 import { MyState } from ".";
+import { getPythonVersions } from "../utils/utils";
 
 export interface SettingSlice {
   scopedVars?: boolean;
@@ -23,6 +24,9 @@ export interface SettingSlice {
   setShowLineNumbers: (b: boolean) => void;
   isSidebarOnLeftHand: boolean;
   setIsSidebarOnLeftHand: (b: boolean) => void;
+  currentPythonPath: string;
+  setCurrentPythonPath: (path: string) => void;
+  pythonPaths: string[];
 }
 
 export const createSettingSlice: StateCreator<MyState, [], [], SettingSlice> = (
@@ -152,4 +156,12 @@ export const createSettingSlice: StateCreator<MyState, [], [], SettingSlice> = (
     set({ isSidebarOnLeftHand: b });
     localStorage.setItem("isSidebarOnLeftHand", JSON.stringify(b));
   },
+  currentPythonPath: localStorage.getItem("currentPythonPath")
+    ? localStorage.getItem("currentPythonPath")!
+    : "python3",
+  setCurrentPythonPath: (path: string) => {
+    set({ currentPythonPath: path });
+    localStorage.setItem("currentPythonPath", path);
+  },
+  pythonPaths: getPythonVersions(),
 });

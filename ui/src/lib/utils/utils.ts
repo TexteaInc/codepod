@@ -72,12 +72,12 @@ export const level2color = {
 };
 
 const yRemoteSelectionStyle = (clientID: string, color: string) => {
-  return `.yRemoteSelection-${clientID} 
+  return `.yRemoteSelection-${clientID}
     { background-color: ${color}; opacity: 0.5;} `;
 };
 
 const yRemoteSelectionHeadStyle = (clientID: string, color: string) => {
-  return `.yRemoteSelectionHead-${clientID} {  
+  return `.yRemoteSelectionHead-${clientID} {
         position: absolute;
         border-left: ${color} solid 2px;
         border-top: ${color} solid 2px;
@@ -91,9 +91,9 @@ const yRemoteSelectionHeadHoverStyle = (
   color: string,
   name: string
 ) => {
-  return `.yRemoteSelectionHead-${clientID}:hover::after { 
-        content: "${name}"; 
-        background-color: ${color}; 
+  return `.yRemoteSelectionHead-${clientID}:hover::after {
+        content: "${name}";
+        background-color: ${color};
         box-shadow: 0 0 0 2px ${color};
         border: 1px solid ${color};
         color: white;
@@ -110,4 +110,22 @@ export function addAwarenessStyle(
   styles.append(yRemoteSelectionHeadStyle(clientID, color));
   styles.append(yRemoteSelectionHeadHoverStyle(clientID, color, name));
   document.head.append(styles);
+}
+
+export function getRemoteURL() {
+  return import.meta.env.DEV ? `localhost:4000` : `${window.location.hostname}:${window.location.port}`;
+}
+
+export function getPythonVersions(): string[]  {
+  const remoteURL = getRemoteURL();
+
+  const req = new window.XMLHttpRequest();
+  req.open("GET", `http://${remoteURL}/versions`, false);
+  req.send(null);
+  if (req.status === 200) {
+    const { versions } = JSON.parse(req.responseText);
+    return versions;
+  }
+
+  return [];
 }
