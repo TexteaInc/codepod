@@ -111,7 +111,7 @@ function rewriteCode(id: string, get: () => MyState): string | null {
       case "vardef":
       case "varuse":
         // directly replace with _SCOPE if we can resolve it
-        if (annotation.origin) {
+        if (annotation.origin && nodesMap.get(annotation.origin)!.parentNode) {
           newcode += `${annotation.name}_${
             nodesMap.get(annotation.origin)!.parentNode
           }`;
@@ -122,7 +122,7 @@ function rewriteCode(id: string, get: () => MyState): string | null {
       case "function":
       case "callsite":
         // directly replace with _SCOPE too
-        if (annotation.origin) {
+        if (annotation.origin && nodesMap.get(annotation.origin)!.parentNode) {
           newcode += `${annotation.name}_${
             nodesMap.get(annotation.origin)!.parentNode
           }`;
@@ -133,7 +133,7 @@ function rewriteCode(id: string, get: () => MyState): string | null {
         break;
       case "bridge":
         // replace "@export x" with "x_thisScope = x_originScope"
-        if (annotation.origin) {
+        if (annotation.origin && nodesMap.get(annotation.origin)!.parentNode) {
           newcode += `${annotation.name}_${nodesMap.get(id)!.parentNode} = ${
             annotation.name
           }_${nodesMap.get(annotation.origin)!.parentNode}`;
